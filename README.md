@@ -43,49 +43,80 @@ being a phishing message.
 
 ### Assumptions and Constraints
 
-* Positive label is a phishing message
-* A false negative (a phishing message not caught) is more detrimental to the business than a false
+Assumptions:
+
+* Metrics
+  * Positive label is a phishing message
+  * A false negative (a phishing message not caught) is more detrimental to the business than a false
 positive (a genuine message predicted as a phishing attempt)
+  * Success metric is F1-score because both false negatives (real phishing attempts) and false positives (genuine
+  messages labelled as phishing) are detrimental to the customer, although false negatives are more detrimental.
+  * Assume that this model is deployed across all communication channels such as email social media, and messaging apps.
+  In reality, you would likely have a different model for each communication channel for different metrics, e.g. recall
+  for social media.
 * In the trade-off between inference speed/latency and accuracy, inference speed is preferred - so
-will prefer smaller LLMs
+will prefer smaller LLMs. Added benefit of greater explainability and lower complexity
 * Model will output a probability and a threshold will be set to determine the label
-* Will apply OOP principles but will not fully abstract the codebase
-* The LLM is called via an API rather than hosted on-prem
-* Assume no fine tuning of LLMs is required
-* Due to time constraints, the following features will be excluded:
-  * data validation
-  * enforcing typing with ensure or pydantic
-  * testing and coverage of all methods and functions
-  * augmenting the dataset by artificially creating new samples
-  * supplementing the dataset with external data
+* The model is downloaded and stored on from Docker image rather than hosted on HuggingFace and called via API. This
+means the model can be accessed offline, have faster inference speeds, and not rely on internet connection.
+* Flask app is deployed locally and not hosted on cloud services such as Heroku or AWS
+* Feature engineering, such as character count, word count, suspicious words count, sentiment analysis, is not required
+for large language models, as they have been trained on sufficient data to understand context
+* Will explore existing pre-trained models which were trained for phishing/spam classification tasks and experiment if
+this transfer learning provides greater performance
+* Assume that no money is allowed to be spent on this project, so no calling of OpenAI's API and fine tuning of LLMs
+using cloud GPU services, such as RunPod
+* Assume no class rebalancing is required as the labels are relatively balanced (292:212).
+
+Due to limited time resource (2.5 days), the following constraints will be applied:
+
+* Will not explore traditional NLP methods and packages, such as nltk and spaCy
+* Data validation excluded
+* Enforcing typing (e.g. ensure or pydantic) excluded
+* Some testing and coverage of methods and functions but not all
+* Some logging but throughout the codebase
+* Some object-orientated programming principles will be applied but not to full codebase
+* Simple Flask app UI
+* Explainability of model not explored
+
+The following MLOps best practices will not be applied:
+
+* Data version control as the dataset is static
+* Continuous model deployment CI/CD with GitHub actions
+* Monitoring of model in production is not required, i.e. data drift
 
 ## Roadmap
 
-* Explore dataset and assess data quality
+* Explore dataset and assess data quality, e.g. duplicates
 * Define problem statement and evaluation metrics
 * Initialise git
 * Create repo structure
 * Create .gitignore
-* Set up pre-commit and github actions CI/CD for linting, sorting, and typing
-* Create an end-to-end pipeline with a simple transformer (BERT) and log metrics with MLflow and DagsHub and set a baseline. A pipeline consists of:
+* Set up pre-commit and github actions CI/CD for linting (black), sorting (isort), and typing - for standardised styling
+* Create an end-to-end training pipeline with a simple transformer (BERT) and log metrics with MLflow and DagsHub and
+set a baseline. A pipeline consists of:
   * data ingestion
+  * data preprocessing
   * model training
   * model evaluation
-* Feature engineer new simple features, such as character count, word count, and suspicious words count, run pipeline and track experiment metrics. Add following step to pipeline:
-  * model transformation
-* Train multiple small-sized LLMs from HuggingFace and track experiment metrics
-* Feature engineer more complex features that require machine learning, such as sentiment analysis, run pipeline and track experiment metrics
-* Augment the dataset as it is small for a deep learning problem at ~500 instances and track impact on experiment metrics.
+* Train a few small-sized LLMs from HuggingFace and track experiment metrics due to limited time resources
 * Create Flask app
-* Dockerise the container
+* Dockerize the container (separate development and production builds)
+* Update README
 
 ## Set Up
+
+## Model Selection
+
+### Metric results
 
 ## Repo Structure
 
 ## Tools
 
 ## Future Work
+
+With more time, the constraints mentioned above would be implemented.
 
 ## License
 
