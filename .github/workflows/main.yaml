@@ -1,0 +1,31 @@
+on: [push, pull_request]
+
+jobs:
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - uses: psf/black@stable
+        with:
+          jupyter: true
+          version: "23.11.0"
+          black_args: ". --line-length 100"
+
+      - uses: isort/isort-action@v1
+
+      - name: commit isort changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A && git diff-index --cached --quiet HEAD || git commit -m 'isort'
+
+      - name: push isort changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+      - run: pip install mypy
+      - run: mypy . --install-types --non-interactive --ignore-missing-imports --explicit-package-bases --namespace-packages
