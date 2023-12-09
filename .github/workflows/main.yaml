@@ -1,0 +1,18 @@
+on: [push, pull_request]
+
+jobs:
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - uses: psf/black@stable
+        with:
+          jupyter: true
+          version: "23.11.0"
+          options: "--line-length 100"
+          src: "."
+      - uses: isort/isort-action@v1
+      - run: pip install mypy
+      - run: mypy . --install-types --non-interactive --ignore-missing-imports --explicit-package-bases --namespace-packages
