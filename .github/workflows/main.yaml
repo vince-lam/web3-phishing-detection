@@ -23,10 +23,11 @@ jobs:
           git add -A && git diff-index --cached --quiet HEAD || git commit -m 'isort'
 
       - name: push isort changes
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: ${{ github.head_ref || github.ref }}
 
       - run: pip install mypy
       - run: mypy . --install-types --non-interactive --ignore-missing-imports --explicit-package-bases --namespace-packages
