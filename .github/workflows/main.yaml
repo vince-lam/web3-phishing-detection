@@ -13,21 +13,6 @@ jobs:
           version: "23.11.0"
           options: "--line-length 100"
           src: "."
-
       - uses: isort/isort-action@v1
-
-      - name: commit isort changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A && git diff-index --cached --quiet HEAD || git commit -m 'isort'
-
-      - name: push isort changes
-        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.head_ref || github.ref }}
-
       - run: pip install mypy
       - run: mypy . --install-types --non-interactive --ignore-missing-imports --explicit-package-bases --namespace-packages
