@@ -11,7 +11,8 @@ jobs:
         with:
           jupyter: true
           version: "23.11.0"
-          black_args: ". --line-length 100"
+          options: "--line-length 100"
+          src: "."
 
       - uses: isort/isort-action@v1
 
