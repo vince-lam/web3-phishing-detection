@@ -1,7 +1,6 @@
 # Web3 Phishing Detection
 
-This aim of this project is to build an end-to-end training pipeline to train a phishing message
-detection model using a web3 phishing dataset, with a Large Language Model within 3 days.
+An end-to-end pipeline for phishing message detection, encompassing model training and inference, along with a Flask application for user interaction, all containerized using Docker for easy deployment and execution.
 
 ## Background
 
@@ -74,6 +73,7 @@ Due to limited time resource (2.5 days), the following constraints will be appli
 * Data validation excluded
 * Enforcing typing (e.g. ensure or pydantic) excluded
 * Some testing and coverage of methods and functions but not all
+* Limited documentation to classes and functions
 * Some logging but throughout the codebase
 * Some object-orientated programming principles will be applied but not to full codebase
 * Simple Flask app UI
@@ -82,24 +82,24 @@ Due to limited time resource (2.5 days), the following constraints will be appli
 The following MLOps best practices will not be applied:
 
 * Data version control as the dataset is static
-* Continuous model deployment CI/CD with GitHub actions
+* Continuous model deployment CI/CD with GitHub actions or Kubeflow
 * Monitoring of model in production is not required, i.e. data drift
 
 ## Roadmap
 
 * Explore dataset and assess data quality, e.g. duplicates
 * Define problem statement and evaluation metrics
-* Initialise git
-* Create repo structure
-* Create .gitignore
+* Initialise git, create repo structure, create .gitignore
 * Set up pre-commit and github actions CI/CD for linting (black), sorting (isort), and typing - for standardised styling
-* Create an end-to-end training pipeline with a simple transformer (BERT) and log metrics with MLflow and DagsHub and
+* Set up DagsHub repo for online experiment and model tracking
+* Create an end-to-end training pipeline with a simple transformer (BERT-based) and log metrics with MLflow and DagsHub and
 set a baseline. A pipeline consists of:
   * data ingestion
   * data preprocessing
   * model training
   * model evaluation
 * Train a few small-sized LLMs from HuggingFace and track experiment metrics due to limited time resources
+* Export best performing model as an ONNX or pickle file
 * Create Flask app
 * Dockerize the container (separate development and production builds)
 * Update README
@@ -116,7 +116,11 @@ set a baseline. A pipeline consists of:
 
 ## Future Work
 
-With more time, the constraints mentioned above would be implemented.
+With more time, the following features could be explored or implmented:
+
+* the constraints mentioned above
+* an ensemble hybrid method using traditional feature engineering and LightGBM
+* quantization of the model to reduce model size and improve inference speeds
 
 ## License
 
