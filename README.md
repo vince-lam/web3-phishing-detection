@@ -45,8 +45,8 @@ being a phishing message.
 Assumptions:
 
 * Metrics
-  * Positive label is a phishing message
-  * A false negative (a phishing message not caught) is more detrimental to the business than a false
+  * An instance with `gen_label` of 1 means that it is a genuine message
+  * However, assuming convention where a phishing attempt is labelled as `y=1` and a geuine message is labelled as `y=0`, then a false negative (a phishing message not caught) is more detrimental to the business than a false
 positive (a genuine message predicted as a phishing attempt)
   * Success metric is F1-score because both false negatives (real phishing attempts) and false positives (genuine
   messages labelled as phishing) are detrimental to the customer, although false negatives are more detrimental.
