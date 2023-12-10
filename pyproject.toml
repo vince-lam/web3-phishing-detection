@@ -16,7 +16,7 @@ flask = "^3.0.0"
 jupyter = "^1.0.0"
 notebook = "^7.0.6"
 flake8 = "^6.1.0"
-black = "^23.11.0"
+black = {extras = ["jupyter"], version = "^23.11.0"}
 isort = "^5.12.0"
 mypy = "^1.7.1"
 ipywidgets = "^8.1.1"
@@ -28,6 +28,7 @@ accelerate = "^0.25.0"
 onnx = "^1.15.0"
 pyyaml = "^6.0.1"
 types-pyyaml = "^6.0.12.12"
+pytest = "^7.4.3"
 
 [tool.isort]
 profile = "black"

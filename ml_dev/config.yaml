@@ -1,4 +1,4 @@
-data_file_path: "data/DS test_data.csv"
+data_file_path: "data/DS test_data_deduped.csv"
 BASE_MODEL: "distilbert-base-uncased-finetuned-sst-2-english"
 output_dir: "model_outputs"
 id2label: {1: "GENUINE", 0: "PHISHING"}
@@ -7,4 +7,4 @@ pytorch_bin_filename: "pytorch_model.bin"
 model_onnx_filename: "model.onnx"
 eval_metric: "f1"
 model_metrics_filename: "model_metrics.txt"
-experiment_name: "distilbert-phishing-f1"
+experiment_name: "distilbert-phishing-f1_deduped"

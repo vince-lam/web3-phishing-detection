@@ -29,7 +29,7 @@ counterfeit websites, or share their confidential information.
 To run the Flask app:
 
 1. Install docker
-2. In the terminal run: `docker run -p8888:8888 vincenthml/ml-app`
+2. In the terminal run: `docker run -p8888:8888 vincenthml/ml-app:1.1`
 3. Go to `http://127.0.0.1:8888` or `http://172.17.0.2:8888` in a web browser
 
 To run the code in this repo:
@@ -48,19 +48,19 @@ Now you can do the following:
 
 1. Download models from HuggingFace, train them on phishing dataset, save the new model and tokenizers
 
-* First, copy the phishing dataset to the `ml-dev/data` directory
-* Open `ml-dev/config.yaml` and update `data_file_path`, `BASE_MODEL`, and other parameters desired
-* Run `cd ml-dev`
+* First, copy the phishing dataset to the `ml_dev/data` directory
+* Open `ml_dev/config.yaml` and update `data_file_path`, `BASE_MODEL`, and other parameters desired
+* Run `cd ml_dev`
 * Run `python train_and_save_model.py`
 
 2. Evaluate the newly trained model on f1, recall, precision, and accuracy
 
-* In `ml-dev` directory, run `python generate_model_metrics.py`
+* In `ml_dev` directory, run `python generate_model_metrics.py`
 * This will create a txt file specified in the `config.yaml` at the path of `{output_dir}/{experiment_name}`
 
 3. Test the model predictions in the CLI
 
-* In `ml-dev` directory, run `python test_predictions.py`
+* In `ml_dev` directory, run `python test_predictions.py`
 * Enter messages in terminal to run predictions
 
 To create a new docker image so the Flask app can run an improved model:
@@ -100,7 +100,7 @@ positive (a genuine message predicted as a phishing attempt)
   for social media.
 * In the trade-off between inference speed/latency and accuracy, inference speed is preferred - so
 will prefer smaller LLMs. Added benefit of greater explainability and lower complexity
-* Model will output a probability and a threshold will be set to determine the label
+* Model will output a probability and a threshold will be set to determine the label rather than a binary 1/0. Using a probability score has the added benefit of setting a threshold to catch messages with low certainty, so human labelling can be used to improve dataset quality.
 * The model is downloaded and stored on from Docker image rather than hosted on HuggingFace and called via API. This
 means the model can be accessed offline, have faster inference speeds, and not rely on internet connection.
 * Flask app is deployed locally and not hosted on cloud services such as Heroku or AWS
@@ -120,7 +120,7 @@ Due to limited time resource (1.5 days), the following constraints will be appli
 * Will not explore traditional NLP methods and packages, such as nltk and spaCy
 * Data validation excluded
 * Enforcing typing (e.g. ensure or pydantic) excluded
-* Some testing and coverage of methods and functions but not all
+* Some unit testing and coverage of methods and functions but not all
 * Limited documentation to classes and functions
 * Some logging but throughout the codebase
 * Some object-orientated programming principles will be applied but not to full codebase
@@ -155,16 +155,18 @@ The following MLOps best practices will not be applied:
 
 [distilbert-base-uncased-finetuned-sst-2-english](https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english) was chosen as a base model to be further fine tuned using custom web3 phishing dataset using a 80/20 train/test split.
 
+The original dataset contained 30 duplicate pairs which were removed before training.
+
 ### Metric results
 
-The model achieved the following metrics:
+The model trained using the deduplicated phishing data achieved the following metrics (the metrics of the model trained on the datasets with duplicates is shown within the parenthesis):
 
-* F1 score: 0.884
-* Recall: 0.897
-* Precision: 0.871
-* Accuracy: 0.842
-* Latency (seconds): 0.0199
-* Throughput (samples per second): 50.3
+* F1 score: 0.906 (0.884)
+* Recall: 0.930 (0.897)
+* Precision: 0.883 (0.871)
+* Accuracy: 0.884 (0.842)
+* Latency (seconds): 0.0190 (0.0199)
+* Throughput (samples per second): 52.5 (50.3)
 
 ## Repo Structure
 
@@ -172,7 +174,7 @@ The model achieved the following metrics:
 .
 ├── LICENSE
 ├── README.md
-├── app                                # Directory for Flask app deployment
+├── app                                       # Directory for Flask app deployment
 │   ├── Dockerfile
 │   ├── app.py
 │   ├── docker-compose.yaml
@@ -187,10 +189,11 @@ The model achieved the following metrics:
 │   │   ├── index.html
 │   │   └── show.html
 │   └── utils.py
-├── ml-dev                             # Directory for model development
+├── ml_dev                                    # Directory for model development
 │   ├── config.yaml
 │   ├── data
-│   │   └── data.csv
+│   │   ├── DS test_data.csv
+│   │   └── DS test_data_deduped.csv
 │   ├── generate_model_metrics.py
 │   ├── logs
 │   ├── model_outputs
@@ -201,7 +204,10 @@ The model achieved the following metrics:
 │   ├── train_and_save_model.py
 │   └── utilities.py
 ├── poetry.lock
-└── pyproject.toml
+├── pyproject.toml
+└── tests
+    └── ml_dev
+        └── test_generate_model_metrics.py
 ```
 
 ## Future Work
