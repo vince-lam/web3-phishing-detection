@@ -1,3 +1,9 @@
+"""
+This script is used for training and evaluating a sequence classification model using the
+transformers library. It reads in a configuration file, loads the necessary data and model,
+and then trains and evaluates the model.
+"""
+
 import os
 from typing import Any, Dict
 
@@ -39,6 +45,19 @@ def train_and_evaluate(
     tokenizer: AutoTokenizer,
     eval_metric: str,
 ) -> None:
+    """
+    Function to train and evaluate a sequence classification model.
+
+    Args:
+        model (AutoModelForSequenceClassification): The model to be trained and evaluated.
+        train_dataset (Any): The training dataset.
+        eval_dataset (Any): The evaluation dataset.
+        tokenizer (AutoTokenizer): The tokenizer to be used.
+        eval_metric (str): The evaluation metric to be used.
+
+    Returns:
+        None
+    """
     training_args = TrainingArguments(
         output_dir=output_dir,
         learning_rate=2e-5,
@@ -69,6 +88,17 @@ def save_model(
     tokenizer: AutoTokenizer,
     path: str = f"./{full_output_dir}/",
 ) -> None:
+    """
+    Function to save a sequence classification model and its tokenizer.
+
+    Args:
+        model (AutoModelForSequenceClassification): The model to be saved.
+        tokenizer (AutoTokenizer): The tokenizer to be saved.
+        path (str): The path where the model and tokenizer will be saved.
+
+    Returns:
+        None
+    """
     os.makedirs(path, exist_ok=True)
     # Save the model's state_dict using torch.save
     torch.save(model.state_dict(), f"{path}/{pytorch_bin_filename}")
@@ -113,6 +143,20 @@ def convert_to_onnx(
 
 
 def main() -> None:
+    """
+    Main function to train, evaluate, save, and load a sequence classification model. It also
+    makes an example prediction.
+
+    The function does the following:
+    - Tokenizes the training and evaluation data.
+    - Trains and evaluates a sequence classification model.
+    - Saves the trained model.
+    - Loads the model and tokenizer.
+    - Makes an example prediction.
+
+    Returns:
+        None
+    """
     tokenizer: AutoTokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
 
     tokenized_train, tokenized_eval = tokenize_data(data_file_path)
