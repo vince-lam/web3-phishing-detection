@@ -66,6 +66,7 @@ this transfer learning provides greater performance
 * Assume that no money is allowed to be spent on this project, so no calling of OpenAI's API and fine tuning of LLMs
 using cloud GPU services, such as RunPod
 * Assume no class rebalancing is required as the labels are relatively balanced (292:212).
+* Assume k-folds cross-validation is not required due to effectiveness of transfer learning for deep learning models
 
 Due to limited time resource (2.5 days), the following constraints will be applied:
 
@@ -78,6 +79,7 @@ Due to limited time resource (2.5 days), the following constraints will be appli
 * Some object-orientated programming principles will be applied but not to full codebase
 * Simple Flask app UI
 * Explainability of model not explored
+* No extensive hyperparameter tuning with optuna
 
 The following MLOps best practices will not be applied:
 
