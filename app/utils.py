@@ -24,13 +24,17 @@ def load_model_and_tokenizer_for_app(
     model: The loaded model.
     tokenizer: The loaded tokenizer.
     """
-    # Load the model's state_dict using torch.load
-    model_state_dict = torch.load(f"{model_dir}/{model_filename}", map_location="cpu")
-    model = AutoModelForSequenceClassification.from_pretrained(
-        tokenizer_name, state_dict=model_state_dict
-    )
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    return model, tokenizer
+    try:
+        # Load the model's state_dict using torch.load
+        model_state_dict = torch.load(f"{model_dir}/{model_filename}", map_location="cpu")
+        model = AutoModelForSequenceClassification.from_pretrained(
+            tokenizer_name, state_dict=model_state_dict
+        )
+        tokenizer = AutoTokenizer.from_pretrained(model_dir)
+        return model, tokenizer
+    except Exception as e:
+        print(f"An error occurred while loading the model and tokenizer: {e}")
+        return None, None
 
 
 def get_prediction(model, tokenizer, text):
@@ -45,19 +49,23 @@ def get_prediction(model, tokenizer, text):
     Returns:
     dict: A dictionary with the label and probability of the prediction.
     """
-    # Tokenize the text
-    encoding = tokenizer(
-        text, return_tensors="pt", padding="max_length", truncation=True, max_length=512
-    )
-    encoding = {k: v.to(model.device) for k, v in encoding.items()}
-    # Get the outputs from the model
-    outputs = model(**encoding)
-    sigmoid = torch.nn.Sigmoid()
-    # Get the probabilities from the outputs
-    probs = sigmoid(outputs.logits.squeeze().cpu()).detach().numpy()
-    label = np.argmax(probs, axis=-1)
+    try:
+        # Tokenize the text
+        encoding = tokenizer(
+            text, return_tensors="pt", padding="max_length", truncation=True, max_length=512
+        )
+        encoding = {k: v.to(model.device) for k, v in encoding.items()}
+        # Get the outputs from the model
+        outputs = model(**encoding)
+        sigmoid = torch.nn.Sigmoid()
+        # Get the probabilities from the outputs
+        probs = sigmoid(outputs.logits.squeeze().cpu()).detach().numpy()
+        label = np.argmax(probs, axis=-1)
 
-    return {
-        "LABEL": "GENUINE" if label == 1 else "PHISHING",
-        "probability": probs[1] if label == 1 else probs[0],
-    }
+        return {
+            "LABEL": "GENUINE" if label == 1 else "PHISHING",
+            "probability": probs[1] if label == 1 else probs[0],
+        }
+    except Exception as e:
+        print(f"An error occurred while getting the prediction: {e}")
+        return None
