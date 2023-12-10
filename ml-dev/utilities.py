@@ -21,6 +21,8 @@ BASE_MODEL = config["BASE_MODEL"]
 output_dir = config["output_dir"]
 pytorch_bin_filename = config["pytorch_bin_filename"]
 eval_metric = config["eval_metric"]
+experiment_name = config["experiment_name"]
+output_dir = f"{output_dir}/{experiment_name}"
 
 
 def load_data(data_file_path):

@@ -14,6 +14,8 @@ BASE_MODEL = config["BASE_MODEL"]
 output_dir = config["output_dir"]
 model_metrics_filename = config["model_metrics_filename"]
 eval_metric = config["eval_metric"]
+experiment_name = config["experiment_name"]
+output_dir = f"{output_dir}/{experiment_name}"
 
 
 def get_metrics():
@@ -47,15 +49,11 @@ def get_metrics():
 
 def save_results(file_name=f"{output_dir}/{model_metrics_filename}"):
     with open(file_name, "a") as f:
-        f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
-        f.write("\n")
-        f.write(f"Fine tuned base model: {BASE_MODEL}")
-        f.write("\n")
-        f.write(f"Evaluated on: {eval_metric}")
-        f.write("\n")
-        f.write(f"Results: {str(get_metrics())}")
-        f.write("\n")
-        f.write("\n")
+        f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}\n")
+        f.write(f"Experiment name: {experiment_name}\n")
+        f.write(f"Fine tuned base model: {BASE_MODEL}\n")
+        f.write(f"Evaluated on: {eval_metric}\n")
+        f.write(f"Results: {str(get_metrics())}\n\n")
         f.close()
 
 

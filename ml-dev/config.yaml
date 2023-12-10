@@ -5,6 +5,6 @@ id2label: {1: "GENUINE", 0: "PHISHING"}
 label2id: {"GENUINE": 1, "PHISHING": 0}
 pytorch_bin_filename: "pytorch_model.bin"
 model_onnx_filename: "model.onnx"
-eval_metric: "f1"
+eval_metric: "accuracy"
 model_metrics_filename: "model_metrics.txt"
-#overwrite_output_dir: True
+experiment_name: "distilbert-phishing-accuracy"

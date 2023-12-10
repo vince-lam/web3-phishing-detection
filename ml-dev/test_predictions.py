@@ -5,6 +5,8 @@ config = read_yaml(config_file_path)
 
 BASE_MODEL = config["BASE_MODEL"]
 output_dir = config["output_dir"]
+experiment_name = config["experiment_name"]
+output_dir = f"{output_dir}/{experiment_name}"
 
 model, tokenizer = load_model_and_tokenizer(
     model_path=f"./{output_dir}/", tokenizer_name=BASE_MODEL
