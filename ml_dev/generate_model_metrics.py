@@ -3,7 +3,7 @@ import time
 import evaluate
 import numpy as np
 from evaluate import evaluator
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, pipeline
+from transformers import pipeline
 from utilities import load_model_and_tokenizer, prepare_data, read_yaml, tokenize_data
 
 config_file_path = "config.yaml"
