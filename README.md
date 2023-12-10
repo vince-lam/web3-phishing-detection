@@ -29,7 +29,7 @@ counterfeit websites, or share their confidential information.
 To run the Flask app:
 
 1. Install docker
-2. In the terminal run: `docker run -p8888:8888 vincenthml/ml-app`
+2. In the terminal run: `docker run -p8888:8888 vincenthml/ml-app:1.1`
 3. Go to `http://127.0.0.1:8888` or `http://172.17.0.2:8888` in a web browser
 
 To run the code in this repo:
