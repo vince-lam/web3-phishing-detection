@@ -1,3 +1,5 @@
+from typing import Any, Dict, Optional, Tuple
+
 import numpy as np
 import pandas as pd
 import torch
@@ -10,8 +12,10 @@ model_bin_filename = "pytorch_model.bin"
 
 
 def load_model_and_tokenizer_for_app(
-    model_dir=model_dir, model_filename=model_bin_filename, tokenizer_name=BASE_MODEL
-):
+    model_dir: str = model_dir,
+    model_filename: str = model_bin_filename,
+    tokenizer_name: str = BASE_MODEL,
+) -> Tuple[Optional[AutoModelForSequenceClassification], Optional[AutoTokenizer]]:
     """
     Load model and tokenizer for the app.
 
@@ -37,7 +41,9 @@ def load_model_and_tokenizer_for_app(
         return None, None
 
 
-def get_prediction(model, tokenizer, text):
+def get_prediction(
+    model: AutoModelForSequenceClassification, tokenizer: AutoTokenizer, text: str
+) -> Optional[Dict[str, Any]]:
     """
     Get prediction for the given text.
 

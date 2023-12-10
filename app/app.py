@@ -18,7 +18,7 @@ model, tokenizer = load_model_and_tokenizer_for_app(
 
 # Define the main route for the app
 @app.route("/", methods=["GET", "POST"])
-def main():
+def main() -> str:
     try:
         # If the request method is POST, get the text from the form
         if request.method == "POST":
@@ -28,8 +28,12 @@ def main():
 
             # Get the prediction for the input text
             full_prediction = get_prediction(model, tokenizer, messages)
-            label = full_prediction["LABEL"]
-            probability = full_prediction["probability"]
+            if full_prediction is not None:
+                label = full_prediction["LABEL"]
+                probability = full_prediction["probability"]
+            else:
+                label = None
+                probability = None
 
             print(full_prediction)
             # Render the show.html template with the label and probability
