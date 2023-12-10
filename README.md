@@ -1,6 +1,6 @@
 # Web3 Phishing Detection
 
-An end-to-end pipeline for phishing message detection, encompassing model training and inference, along with a Flask application for user interaction, all containerized using Docker for easy deployment and execution.
+An end-to-end pipeline for phishing message detection, encompassing model training and inference, along with a Flask application for user interaction, all containerized using Docker for easy deployment and execution. Built in 2 days.
 
 ## Background
 
@@ -24,6 +24,53 @@ channels, including email, social media, messaging apps, and even fake dApps. Th
 messages typically prompt users to click on malicious links, enter their seed phrases on
 counterfeit websites, or share their confidential information.
 
+## Set Up
+
+To run the Flask app:
+
+1. Install docker
+2. In the terminal run: `docker run -p8888:8888 vincenthml/ml-app`
+3. Go to `http://127.0.0.1:8888` or `http://172.17.0.2:8888` in a web browser
+
+To run the code in this repo:
+
+1. Clone this repo and cd to the root directory
+2. Create a new virtual environment, I recommend using venv by running:
+
+* `python -m venv .venv`
+* `source .venv/bin/activate`
+* `python -m pip install --upgrade pip`
+
+3. Install poetry by running: `pip install poetry`
+4. Install python packages with poetry by running: `poetry install`
+
+Now you can do the following:
+
+1. Download models from HuggingFace, train them on phishing dataset, save the new model and tokenizers
+
+* First, copy the phishing dataset to the `ml-dev/data` directory
+* Open `ml-dev/config.yaml` and update `data_file_path`, `BASE_MODEL`, and other parameters desired
+* Run `cd ml-dev`
+* Run `python train_and_save_model.py`
+
+2. Evaluate the newly trained model on f1, recall, precision, and accuracy
+
+* In `ml-dev` directory, run `python generate_model_metrics.py`
+* This will create a txt file specified in the `config.yaml` at the path of `{output_dir}/{experiment_name}`
+
+3. Test the model predictions in the CLI
+
+* In `ml-dev` directory, run `python test_predictions.py`
+* Enter messages in terminal to run predictions
+
+To create a new docker image so the Flask app can run an improved model:
+
+1. Make sure the best performing model and associated tokenizer files are saved in `app/models` and remove all other models
+2. `cd app`
+3. Update `image` parameter in `docker-compose.yaml` to correct username and project name
+4. Build the docker image: `docker compose build up --build`
+5. Push image to Docker Hub for reproducibility: `docker compose push`
+
 ### Deliverables
 
 * Working code for the end-to-end training pipeline using Python scripts.
@@ -40,9 +87,7 @@ after packaging, and it should have an endpoint that can be queried using a POST
 to interact with it. The output should be either binary or the probability score of the message
 being a phishing message.
 
-### Assumptions and Constraints
-
-Assumptions:
+### Assumptions
 
 * Metrics
   * An instance with `gen_label` of 1 means that it is a genuine message
@@ -68,7 +113,9 @@ using cloud GPU services, such as RunPod
 * Assume no class rebalancing is required as the labels are relatively balanced (292:212).
 * Assume k-folds cross-validation is not required due to effectiveness of transfer learning for deep learning models
 
-Due to limited time resource (2.5 days), the following constraints will be applied:
+### Constraints
+
+Due to limited time resource (1.5 days), the following constraints will be applied:
 
 * Will not explore traditional NLP methods and packages, such as nltk and spaCy
 * Data validation excluded
@@ -93,34 +140,80 @@ The following MLOps best practices will not be applied:
 * Define problem statement and evaluation metrics
 * Initialise git, create repo structure, create .gitignore
 * Set up pre-commit and github actions CI/CD for linting (black), sorting (isort), and typing - for standardised styling
-* Set up DagsHub repo for online experiment and model tracking
-* Create an end-to-end training pipeline with a simple transformer (BERT-based) and log metrics with MLflow and DagsHub and
-set a baseline. A pipeline consists of:
+* Create an end-to-end training pipeline with a simple transformer (BERT-based) and log metrics to set a baseline. A pipeline consists of:
   * data ingestion
   * data preprocessing
   * model training
   * model evaluation
 * Train a few small-sized LLMs from HuggingFace and track experiment metrics due to limited time resources
-* Export best performing model as an ONNX or pickle file
+* Export best performing model as a bin file
 * Create Flask app
 * Dockerize the container (separate development and production builds)
 * Update README
 
-## Set Up
-
 ## Model Selection
+
+[distilbert-base-uncased-finetuned-sst-2-english](https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english) was chosen as a base model to be further fine tuned using custom web3 phishing dataset using a 80/20 train/test split.
 
 ### Metric results
 
+The model achieved the following metrics:
+
+* F1 score: 0.884
+* Recall: 0.897
+* Precision: 0.871
+* Accuracy: 0.842
+* Latency (seconds): 0.0199
+* Throughput (samples per second): 50.3
+
 ## Repo Structure
 
-## Tools
+```markdown
+.
+├── LICENSE
+├── README.md
+├── app                                # Directory for Flask app deployment
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── docker-compose.yaml
+│   ├── models
+│   │   ├── pytorch_model.bin
+│   │   ├── special_tokens_map.json
+│   │   ├── tokenizer.json
+│   │   ├── tokenizer_config.json
+│   │   └── vocab.txt
+│   ├── requirements.txt
+│   ├── templates
+│   │   ├── index.html
+│   │   └── show.html
+│   └── utils.py
+├── ml-dev                             # Directory for model development
+│   ├── config.yaml
+│   ├── data
+│   │   └── data.csv
+│   ├── generate_model_metrics.py
+│   ├── logs
+│   ├── model_outputs
+│   ├── notebooks
+│   │   └── exploration.ipynb
+│   ├── requirements_poetry.txt
+│   ├── test_predictions.py
+│   ├── train_and_save_model.py
+│   └── utilities.py
+├── poetry.lock
+└── pyproject.toml
+```
 
 ## Future Work
 
-With more time, the following features could be explored or implmented:
+With more time, the following features could be explored or implemented:
 
 * the constraints mentioned above
+* test the following models fine tuned for spam classification and compare results to trained model:
+  * <https://huggingface.co/mshenoda/roberta-spam>
+  * <https://huggingface.co/Huaibo/phishing_bert>
+  * <https://huggingface.co/mrm8488/bert-tiny-finetuned-sms-spam-detection>
+  * <https://huggingface.co/tony4194/distilbert-spamEmail>
 * an ensemble hybrid method using traditional feature engineering and LightGBM
 * quantization of the model to reduce model size and improve inference speeds
 
