@@ -15,21 +15,28 @@ model, tokenizer = load_model_and_tokenizer_for_app(
 
 @app.route("/", methods=["GET", "POST"])
 def main():
-    if request.method == "POST":
-        text = request.form
-        messages = text["input"]
-        print(messages)
+    try:
+        if request.method == "POST":
+            text = request.form
+            messages = text["input"]
+            print(messages)
 
-        full_prediction = get_prediction(model, tokenizer, messages)
-        label = full_prediction["LABEL"]
-        probability = full_prediction["probability"]
+            full_prediction = get_prediction(model, tokenizer, messages)
+            label = full_prediction["LABEL"]
+            probability = full_prediction["probability"]
 
-        print(full_prediction)
-        return render_template("show.html", label=label, probability=probability)
+            print(full_prediction)
+            return render_template("show.html", label=label, probability=probability)
 
-    else:
-        return render_template("index.html")
+        else:
+            return render_template("index.html")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return render_template("error.html", error=str(e))
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    try:
+        app.run(host="0.0.0.0", debug=True)
+    except Exception as e:
+        print(f"An error occurred when starting the server: {e}")
