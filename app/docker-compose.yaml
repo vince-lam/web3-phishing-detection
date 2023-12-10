@@ -1,0 +1,11 @@
+version: 2.23.3
+
+services:
+  ml-app:
+    container_name: ml-app
+    image: vincenthml/ml-app
+    ports:
+      - "8888:8888"
+    build:
+      context: .
+      dockerfile: Dockerfile
