@@ -1,0 +1,10 @@
+data_file_path: "data/DS test_data.csv"
+BASE_MODEL: "distilbert-base-uncased-finetuned-sst-2-english"
+output_dir: "model_outputs"
+id2label: {1: "GENUINE", 0: "PHISHING"}
+label2id: {"GENUINE": 1, "PHISHING": 0}
+pytorch_bin_filename: "pytorch_model.bin"
+model_onnx_filename: "model.onnx"
+eval_metric: "f1"
+model_metrics_filename: "model_metrics.txt"
+#overwrite_output_dir: True
