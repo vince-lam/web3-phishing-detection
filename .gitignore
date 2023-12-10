@@ -161,7 +161,8 @@ cython_debug/
 
 .DS_Store
 .vscode/*
-ml-dev/notebooks/mlruns/*
+ml-dev/notebooks/*
+ml-dev/model_outputs/*
 
 *.csv
 *.pkl
