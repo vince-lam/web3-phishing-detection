@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict
 
 import torch
@@ -68,6 +69,7 @@ def save_model(
     tokenizer: AutoTokenizer,
     path: str = f"./{full_output_dir}/",
 ) -> None:
+    os.makedirs(path, exist_ok=True)
     # Save the model's state_dict using torch.save
     torch.save(model.state_dict(), f"{path}/{pytorch_bin_filename}")
     # Save the tokenizer using save_pretrained
