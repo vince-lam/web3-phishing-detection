@@ -16,7 +16,7 @@ flask = "^3.0.0"
 jupyter = "^1.0.0"
 notebook = "^7.0.6"
 flake8 = "^6.1.0"
-black = "^23.11.0"
+black = {extras = ["jupyter"], version = "^23.11.0"}
 isort = "^5.12.0"
 mypy = "^1.7.1"
 ipywidgets = "^8.1.1"
