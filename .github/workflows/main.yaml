@@ -14,5 +14,7 @@ jobs:
           options: "--line-length 100"
           src: "."
       - uses: isort/isort-action@v1
+        with:
+          options: "--profile black"
       - run: pip install mypy
       - run: mypy . --install-types --non-interactive --ignore-missing-imports --explicit-package-bases --namespace-packages
