@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
-
-from app.utils import get_prediction, load_model_and_tokenizer_for_app
+from utils import get_prediction, load_model_and_tokenizer_for_app
 
 app = Flask(__name__)
 
@@ -18,7 +17,6 @@ model, tokenizer = load_model_and_tokenizer_for_app(
 def main():
     if request.method == "POST":
         text = request.form
-        # print(text)
         messages = text["input"]
         print(messages)
 

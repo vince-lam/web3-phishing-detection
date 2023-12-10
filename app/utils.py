@@ -12,7 +12,7 @@ def load_model_and_tokenizer_for_app(
     model_dir=model_dir, model_filename=model_bin_filename, tokenizer_name=BASE_MODEL
 ):
     # Load the model's state_dict using torch.load
-    model_state_dict = torch.load(f"{model_dir}/{model_filename}")
+    model_state_dict = torch.load(f"{model_dir}/{model_filename}", map_location="cpu")
     model = AutoModelForSequenceClassification.from_pretrained(
         tokenizer_name, state_dict=model_state_dict
     )
