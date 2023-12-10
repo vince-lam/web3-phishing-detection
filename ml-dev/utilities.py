@@ -22,7 +22,7 @@ output_dir = config["output_dir"]
 pytorch_bin_filename = config["pytorch_bin_filename"]
 eval_metric = config["eval_metric"]
 experiment_name = config["experiment_name"]
-output_dir = f"{output_dir}/{experiment_name}"
+full_output_dir = f"{output_dir}/{experiment_name}"
 
 
 def load_data(data_file_path):
@@ -80,7 +80,7 @@ def compute_metrics(eval_pred, metric_choice=eval_metric):
     return metric.compute(predictions=predictions, references=labels)
 
 
-def load_model_and_tokenizer(model_path=f"./{output_dir}/", tokenizer_name=BASE_MODEL):
+def load_model_and_tokenizer(model_path=f"./{full_output_dir}/", tokenizer_name=BASE_MODEL):
     # Load the model's state_dict using torch.load
     model_state_dict = torch.load(f"{model_path}/{pytorch_bin_filename}")
     model = AutoModelForSequenceClassification.from_pretrained(

@@ -15,14 +15,14 @@ output_dir = config["output_dir"]
 model_metrics_filename = config["model_metrics_filename"]
 eval_metric = config["eval_metric"]
 experiment_name = config["experiment_name"]
-output_dir = f"{output_dir}/{experiment_name}"
+full_output_dir: str = f"{output_dir}/{experiment_name}"
 
 
 def get_metrics():
     _, tokenized_eval = tokenize_data(data_file_path)
 
     new_model, new_tokenizer = load_model_and_tokenizer(
-        model_path=f"./{output_dir}/", tokenizer_name=BASE_MODEL
+        model_path=f"./{full_output_dir}/", tokenizer_name=BASE_MODEL
     )
 
     clf_metrics = evaluate.combine(
@@ -47,7 +47,7 @@ def get_metrics():
     return results
 
 
-def save_results(file_name=f"{output_dir}/{model_metrics_filename}"):
+def save_results(file_name=f"{full_output_dir}/{model_metrics_filename}"):
     with open(file_name, "a") as f:
         f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}\n")
         f.write(f"Experiment name: {experiment_name}\n")
