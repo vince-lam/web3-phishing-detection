@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import torch
 from transformers import (
     AutoModelForSequenceClassification,
@@ -13,23 +15,29 @@ from utilities import (
     tokenize_data,
 )
 
-config_file_path = "config.yaml"
-config = read_yaml(config_file_path)
+config_file_path: str = "config.yaml"
+config: Dict[str, Any] = read_yaml(config_file_path)
 
-data_file_path = config["data_file_path"]
-BASE_MODEL = config["BASE_MODEL"]
-output_dir = config["output_dir"]
-id2label = config["id2label"]
-label2id = config["label2id"]
-eval_metric = config["eval_metric"]
+data_file_path: str = config["data_file_path"]
+BASE_MODEL: str = config["BASE_MODEL"]
+output_dir: str = config["output_dir"]
+id2label: Dict[int, str] = config["id2label"]
+label2id: Dict[str, int] = config["label2id"]
+eval_metric: str = config["eval_metric"]
 
-pytorch_bin_filename = config["pytorch_bin_filename"]
-model_onnx_filename = config["model_onnx_filename"]
-experiment_name = config["experiment_name"]
-output_dir = f"{output_dir}/{experiment_name}"
+pytorch_bin_filename: str = config["pytorch_bin_filename"]
+model_onnx_filename: str = config["model_onnx_filename"]
+experiment_name: str = config["experiment_name"]
+full_output_dir: str = f"{output_dir}/{experiment_name}"
 
 
-def train_and_evaluate(model, train_dataset, eval_dataset, tokenizer, eval_metric):
+def train_and_evaluate(
+    model: AutoModelForSequenceClassification,
+    train_dataset: Any,
+    eval_dataset: Any,
+    tokenizer: AutoTokenizer,
+    eval_metric: str,
+) -> None:
     training_args = TrainingArguments(
         output_dir=output_dir,
         learning_rate=2e-5,
@@ -55,25 +63,28 @@ def train_and_evaluate(model, train_dataset, eval_dataset, tokenizer, eval_metri
     trainer.evaluate()
 
 
-def save_model(model, tokenizer, path=f"./{output_dir}/"):
+def save_model(
+    model: AutoModelForSequenceClassification,
+    tokenizer: AutoTokenizer,
+    path: str = f"./{full_output_dir}/",
+) -> None:
     # Save the model's state_dict using torch.save
     torch.save(model.state_dict(), f"{path}/{pytorch_bin_filename}")
     # Save the tokenizer using save_pretrained
     tokenizer.save_pretrained(path)
 
 
-def save_model_as_safetensors(model, path=f"./{output_dir}/"):
+def save_model_as_safetensors(
+    model: AutoModelForSequenceClassification, path: str = f"./{full_output_dir}/"
+) -> None:
     model.save_pretrained(path)
 
 
-def save_model_as_pytorch(model, tokenizer, path=f"./{output_dir}/"):
-    # Save the model's state_dict using torch.save
-    torch.save(model.state_dict(), f"{path}/{pytorch_bin_filename}")
-    # Save the tokenizer using save_pretrained
-    tokenizer.save_pretrained(path)
-
-
-def convert_to_onnx(model, path=f"./{output_dir}", tokenizer_name=BASE_MODEL):
+def convert_to_onnx(
+    model: AutoModelForSequenceClassification,
+    path: str = f"./{full_output_dir}",
+    tokenizer_name: str = BASE_MODEL,
+) -> None:
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
     model.to(torch.device("cpu"))
 
@@ -99,8 +110,8 @@ def convert_to_onnx(model, path=f"./{output_dir}", tokenizer_name=BASE_MODEL):
         )
 
 
-def main():
-    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+def main() -> None:
+    tokenizer: AutoTokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
 
     tokenized_train, tokenized_eval = tokenize_data(data_file_path)
 
@@ -127,7 +138,7 @@ def main():
     # Load the model and tokenizer
     new_model, new_tokenizer = load_model_and_tokenizer()
 
-    # convert_to_onnx(model=model, path=f"./{output_dir}", tokenizer_name=BASE_MODEL)
+    # convert_to_onnx(model=model, path=f"./{full_output_dir}", tokenizer_name=BASE_MODEL)
 
     # Example prediction
     example = """Verify your email address on Binance to unlock additional features and enhance the security of your
