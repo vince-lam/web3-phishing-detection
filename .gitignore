@@ -163,6 +163,8 @@ cython_debug/
 .vscode/*
 
 ml_dev/model_outputs/*
+app/models/*
 
 *.csv
 *.pkl
+*.bin
