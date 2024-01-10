@@ -1,3 +1,5 @@
+import os
+
 import evaluate
 import numpy as np
 import pandas as pd
@@ -10,12 +12,15 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 def read_yaml(file_path):
     with open(file_path, "r") as file:
-        data = yaml.safe_load(file)
-    return data
+        return yaml.safe_load(file)
 
 
-config_file_path = "config.yaml"
-config = read_yaml(config_file_path)
+def get_config():
+    config_file_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    return read_yaml(config_file_path)
+
+
+config = get_config()
 
 BASE_MODEL = config["BASE_MODEL"]
 output_dir = config["output_dir"]
